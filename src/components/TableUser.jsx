@@ -7,6 +7,9 @@ import ModalEditUser from './ModalEditUser';
 import _, { debounce } from "lodash";
 import ModalDeleteUser from './ModalDeleteUser';
 import './TableUser.scss'
+import { CSVLink } from "react-csv";
+import { toast } from 'react-toastify';
+import Papa from 'papaparse';
 
 const TableUser = () => {
     const [listUsers, setListUsers] = useState([]);
@@ -23,6 +26,8 @@ const TableUser = () => {
 
     const [sortBy, setSortBy] = useState("asc")
     const [sortField, setSortField] = useState("id")
+
+    const [dataExport, setDataExport] = useState([]);
 
     const handleClose = () => {
         setIsShowModalAddNewUser(false)
@@ -102,14 +107,103 @@ const TableUser = () => {
 
     }, 500)
 
+    const getUserExport = (done) => {
+        let result = [];
+
+        if (listUsers && listUsers.length > 0) {
+
+            result.push(["ID", "Email", "First name", "Last name"])
+
+            listUsers.map((item, index) => {
+                let arr = [];
+                arr[0] = item.id;
+                arr[1] = item.email;
+                arr[2] = item.first_name;
+                arr[3] = item.last_name;
+                result.push(arr);
+            })
+
+            setDataExport(result);
+            done();
+        }
+    }
+
+    const handleImportCSV = (event) => {
+        if (event.target && event.target.files && event.target.files[0]) {
+            let file = event.target.files[0];
+
+            // Validate
+            if (file.type !== "text/csv") {
+                toast.error("Only accept csv files ....")
+                return;
+            }
+
+            // Todo Import
+            Papa.parse(file, {
+                complete: function (results) {
+                    let rawCSV = results.data;
+                    if (rawCSV.length > 0) {
+                        if (rawCSV[0] && rawCSV[0].length === 3) {
+                            if (rawCSV[0][0] !== "email" || rawCSV[0][1] !== "first_name" || rawCSV[0][2] !== "last_name") {
+                                toast.error("Wrong format Header CSV file!")
+                            } else {
+                                let result = [];
+
+                                rawCSV.map((item, index) => {
+                                    if (index > 0 && item.length === 3) {
+                                        console.log('item')
+                                        let obj = {};
+                                        obj.email = item[0];
+                                        obj.first_name = item[1];
+                                        obj.last_name = item[2];
+
+                                        result.push(obj)
+                                    }
+                                })
+                                setListUsers(result);
+                            }
+                        } else {
+                            toast.error("Wrong format CSV file!")
+                        }
+                    }
+                }
+            });
+
+        }
+    }
+
     return (
         <>
             <div className="my-3 add-new d-flex justify-content-between">
                 <span><b>List Users: </b></span>
-                <button
-                    className="btn btn-success"
-                    onClick={() => setIsShowModalAddNewUser(true)}
-                >Add New User</button>
+                <div className="d-flex gap-2">
+                    <label htmlFor="import" className="btn btn-warning">
+                        <i className="fa-solid fa-file-import" /> Import
+                    </label>
+                    <input id="import" type="file" hidden
+                        onChange={(event) => handleImportCSV(event)}
+                    />
+
+                    <CSVLink
+                        data={dataExport}
+                        filename={"user.csv"}
+                        className="btn btn-primary"
+                        asyncOnClick={true}
+                        onClick={getUserExport}
+                    >
+                        <i className="fa-solid fa-download" />
+                        <span>
+                            Download
+                        </span>
+                    </CSVLink>
+
+                    <button
+                        className="btn btn-success"
+                        onClick={() => setIsShowModalAddNewUser(true)}
+                    >
+                        <i className="fa-solid fa-circle-plus"></i> <span>Add New</span>
+                    </button>
+                </div>
             </div>
             <div className="col-4 my-3">
                 <input className="form-control" type="text" placeholder="Search user by email..." onChange={(e) => handleSearchUserByEmail(e)} />

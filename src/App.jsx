@@ -3,6 +3,8 @@ import TableUser from './components/TableUser'
 import { Container } from 'react-bootstrap'
 import './App.scss'
 import { ToastContainer } from 'react-toastify'
+import { Route, Routes } from 'react-router-dom'
+import Home from './components/Home'
 
 const App = () => {
 
@@ -11,7 +13,10 @@ const App = () => {
       <div className="App-container">
         <Header />
         <Container>
-          <TableUser />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/users" element={<TableUser />} />
+          </Routes>
         </Container >
       </div >
       <ToastContainer
