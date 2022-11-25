@@ -1,0 +1,10 @@
+.back {
+    text-decoration: none;
+    color: #842029;
+    .icon {
+        cursor: pointer;
+    }
+    &:hover {
+        color: #cd2e3e;
+    }
+}

@@ -1,4 +1,16 @@
-i {
-    margin: 0 4px;
-    cursor: pointer;
+.addnew {
+    align-items: center;
+    justify-content: center;
+    i {
+        margin: 0 4px;
+        cursor: pointer;
+    }
+}
+
+.customize-table {
+    width: inherit;
+    overflow: auto;
+}
+.pagination {
+    justify-content: center;
 }
