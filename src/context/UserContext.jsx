@@ -28,7 +28,6 @@ const UserProvider = ({ children }) => {
             auth: false,
         }));
     };
-    console.log("useeve.holt@reqres.in", user)
 
     return (
         <UserContext.Provider value={{ user, loginContext, logout }}>

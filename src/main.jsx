@@ -8,11 +8,15 @@ import {
   BrowserRouter
 } from "react-router-dom";
 import { UserProvider } from './context/UserContext';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <UserProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </UserProvider>
+  <Provider store={store}>
+    <UserProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </UserProvider>
+  </Provider>
 )

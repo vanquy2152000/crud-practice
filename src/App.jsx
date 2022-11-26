@@ -5,10 +5,14 @@ import './App.scss'
 import { UserContext } from './context/UserContext'
 import { useContext, useEffect } from 'react'
 import AppRoutes from './routes/AppRoutes'
+import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
+  const dispatch = useDispatch();
+  const dataUserRedux = useSelector(state => state.user.account);
+  console.log("check redux :", dataUserRedux)
+
   const { user, loginContext } = useContext(UserContext)
-  console.log("check user", user)
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
