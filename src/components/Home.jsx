@@ -15,6 +15,9 @@ const Home = () => {
             <span>9.Export User ra file .csv</span>
             <span>10.Using Redux</span>
             <span>11.Đăng xuất</span>
+            <span>12.Sử dụng Redux</span>
+            <h4>Tài khoảng đăng nhập để test các chức năng : eve.holt@reqres.in </h4>
+            <h4>Password không bắt buộc có thể nhập bất kì vì sử dụng API mẫu trên reqres.in </h4>
         </div>
     )
 }
