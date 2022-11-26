@@ -1,48 +1,46 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './Login.scss'
 import { toast } from 'react-toastify';
-import { login } from '../services/UserService';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
+import { handleLoginRedux } from '../redux/actions/userAction.js'
+import { useDispatch, useSelector } from 'react-redux';
 
 const Login = () => {
-    const { loginContext } = useContext(UserContext)
-
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [email, setEmail] = useState('');
-    const [passwork, setPasswork] = useState('')
-    const [isShowPasswork, setIsShowPasswork] = useState(false)
-    const [loadingAPI, setLoadingAPI] = useState(false);
+    const [password, setPassword] = useState('')
+    const [isShowPassword, setIsShowPassword] = useState(false)
+
+    const isLoading = useSelector(state => state.user.isLoading)
+    const account = useSelector(state => state.user.account)
 
     const handleLogin = async () => {
-        if (!email || !passwork) {
-            toast.error("Email/Passwork is required!");
+        if (!email || !password) {
+            toast.error("Email/Password is required!");
             return;
         }
-        setLoadingAPI(true);
 
-        let res = await login(email.trim(), passwork);
-
-        if (res && res.token) {
-            loginContext(email, res.token)
-            navigate('/')
-            toast.success("Log in is success")
-        } else {
-            // error
-            if (res.status === 400) {
-                toast.error(res.data.error)
-            }
-        }
-        setLoadingAPI(false);
+        dispatch(handleLoginRedux(email, password))
     }
 
-    const handleEnterPress = (event) => {
-        console.log(event)
-        if (event.key === 'Enter') {
+    useEffect(() => {
+        if (account && account.auth === true) {
+            navigate('/')
+        }
+    }, [account])
 
+    const handleEnterPress = (event) => {
+        if (event.key === 'Enter') {
             handleLogin()
         }
     }
+    const handleGoBack = () => {
+        navigate('/')
+    }
+
 
     return (
         <div className="login-container col-12 col-sm-4">
@@ -55,25 +53,25 @@ const Login = () => {
             />
             <div className="input-2">
                 <input
-                    type={isShowPasswork === true ? "text" : "password"}
+                    type={isShowPassword === true ? "text" : "password"}
                     placeholder="Password..."
-                    onChange={(e) => setPasswork(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={handleEnterPress}
                 />
-                <i className={isShowPasswork === true ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}
-                    onClick={() => setIsShowPasswork(!isShowPasswork)}
+                <i className={isShowPassword === true ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}
+                    onClick={() => setIsShowPassword(!isShowPassword)}
                 />
             </div>
 
             <button
-                className={email && passwork ? "active" : ""}
-                disabled={email && passwork ? false : true}
+                className={email && password ? "active" : ""}
+                disabled={email && password ? false : true}
                 onClick={() => handleLogin()}
             >
-                {loadingAPI && <i className="fas fa-spinner fa-spin"></i>}
+                {isLoading && <i className="fas fa-spinner fa-spin"></i>}
                 &nbsp;Login
             </button>
-            <div className="back">
+            <div className="back" onClick={() => handleGoBack()}>
                 <i className="fa-solid fa-angles-left" /> Go back
             </div>
         </div>

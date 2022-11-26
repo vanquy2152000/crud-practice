@@ -7,16 +7,16 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import {
   BrowserRouter
 } from "react-router-dom";
-import { UserProvider } from './context/UserContext';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import ErrorBoundary from './components/ErrorBoundary';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <UserProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ErrorBoundary >
         <App />
-      </BrowserRouter>
-    </UserProvider>
+      </ErrorBoundary>
+    </BrowserRouter>
   </Provider>
 )

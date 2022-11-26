@@ -1,9 +1,9 @@
-import { UserContext } from '../context/UserContext';
-import { useContext } from 'react'
 import { Alert } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 
 const PrivateRoute = (props) => {
-    const { user } = useContext(UserContext);
+    const user = useSelector(state => state.user.account)
 
     if (user && !user.auth) {
         return <>
@@ -12,6 +12,9 @@ const PrivateRoute = (props) => {
                 <p>
                     You don't have permission to acess this route.
                 </p>
+                <NavLink className="back" to="/">
+                    <i className="fa-solid fa-angles-left icon" /> Go back
+                </NavLink>
             </Alert>
         </>
     }
